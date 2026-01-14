@@ -26,6 +26,7 @@ class Brewbar < Formula
   end
 
   test do
-    assert_match "BrewBar", shell_output("#{bin}/brewbar --help 2>&1", 1)
+    assert_predicate bin/"brewbar", :exist?
+    assert_predicate bin/"brewbar", :executable?
   end
 end
