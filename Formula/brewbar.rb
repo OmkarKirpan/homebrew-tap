@@ -26,7 +26,7 @@ class Brewbar < Formula
   end
 
   test do
-    assert_predicate bin/"brewbar", :exist?
+    assert_path_exists bin/"brewbar"
     assert_predicate bin/"brewbar", :executable?
   end
 end
