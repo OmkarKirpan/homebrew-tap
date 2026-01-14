@@ -9,10 +9,8 @@ class Brewbar < Formula
   depends_on macos: :ventura
 
   def install
-    cd "BrewBar" do
-      system "swift", "build", "-c", "release", "--disable-sandbox"
-      bin.install ".build/release/BrewBar" => "brewbar"
-    end
+    system "swift", "build", "-c", "release", "--disable-sandbox"
+    bin.install ".build/release/BrewBar" => "brewbar"
   end
 
   def caveats
