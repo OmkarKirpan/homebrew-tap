@@ -1,8 +1,8 @@
 class Brewbar < Formula
   desc "Native macOS menubar app for managing Homebrew services"
   homepage "https://github.com/omkarkirpan/BrewBar"
-  url "https://github.com/omkarkirpan/BrewBar/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "16c7e96acf3eef745ea1a2095d9d7b4ab2a4a291fb09e474864b12c88598cd3e"
+  url "https://github.com/omkarkirpan/BrewBar/archive/refs/tags/v1.1.1.tar.gz"
+  sha256 "d901c9c12b5c1ea3946cbe09460613765f60c2035c72f77d035d991cdea63237"
   license "MIT"
 
   depends_on xcode: ["14.0", :build]
