@@ -9,14 +9,55 @@ class Brewbar < Formula
   depends_on macos: :ventura
 
   def install
-    # Build the .app bundle
-    cd "BrewBar" do
-      system "chmod", "+x", "scripts/build-app.sh"
-      system "scripts/build-app.sh"
-    end
+    # Build release binary
+    system "swift", "build", "-c", "release", "--disable-sandbox"
 
-    # Install .app bundle to prefix
-    prefix.install "BrewBar/BrewBar.app"
+    # Get binary path
+    bin_path = Utils.safe_popen_read("swift", "build", "--show-bin-path", "-c", "release").strip
+
+    # Create .app bundle structure
+    app_bundle = prefix/"BrewBar.app/Contents"
+    (app_bundle/"MacOS").mkpath
+    (app_bundle/"Resources").mkpath
+
+    # Copy binary
+    cp "#{bin_path}/BrewBar", app_bundle/"MacOS/BrewBar"
+
+    # Create Info.plist
+    (app_bundle/"Info.plist").write <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+          <key>CFBundleDevelopmentRegion</key>
+          <string>en</string>
+          <key>CFBundleExecutable</key>
+          <string>BrewBar</string>
+          <key>CFBundleIdentifier</key>
+          <string>com.brewbar.app</string>
+          <key>CFBundleInfoDictionaryVersion</key>
+          <string>6.0</string>
+          <key>CFBundleName</key>
+          <string>BrewBar</string>
+          <key>CFBundlePackageType</key>
+          <string>APPL</string>
+          <key>CFBundleShortVersionString</key>
+          <string>#{version}</string>
+          <key>CFBundleVersion</key>
+          <string>1</string>
+          <key>LSApplicationCategoryType</key>
+          <string>public.app-category.utilities</string>
+          <key>LSMinimumSystemVersion</key>
+          <string>13.0</string>
+          <key>LSUIElement</key>
+          <true/>
+          <key>NSHighResolutionCapable</key>
+          <true/>
+          <key>NSPrincipalClass</key>
+          <string>NSApplication</string>
+      </dict>
+      </plist>
+    XML
   end
 
   def post_install
@@ -24,7 +65,6 @@ class Brewbar < Formula
     system "ln", "-sf", "#{prefix}/BrewBar.app", "/Applications/BrewBar.app"
 
     # Launch BrewBar after installation
-    # The app will auto-enable launch at login on first run
     system "open", "/Applications/BrewBar.app"
   end
 
@@ -33,14 +73,14 @@ class Brewbar < Formula
       BrewBar has been installed and launched!
 
       The app will appear in your menubar with a mug icon.
-      Launch at login has been automatically enabled on first run.
+      Launch at login is automatically enabled on first run.
 
       To disable launch at login, open Settings in the app.
 
       If you encounter Gatekeeper warnings, run:
         xattr -cr /Applications/BrewBar.app
 
-      CLI commands are available:
+      CLI commands:
         /Applications/BrewBar.app/Contents/MacOS/BrewBar --version
         /Applications/BrewBar.app/Contents/MacOS/BrewBar --help
     EOS
