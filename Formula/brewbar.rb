@@ -61,11 +61,8 @@ class Brewbar < Formula
   end
 
   def post_install
-    # Create symlink in /Applications for easy access
-    system "ln", "-sf", "#{prefix}/BrewBar.app", "/Applications/BrewBar.app"
-
     # Launch BrewBar after installation
-    system "open", "/Applications/BrewBar.app"
+    system "open", "#{prefix}/BrewBar.app"
   end
 
   def caveats
@@ -75,14 +72,15 @@ class Brewbar < Formula
       The app will appear in your menubar with a mug icon.
       Launch at login is automatically enabled on first run.
 
-      To disable launch at login, open Settings in the app.
+      To add to /Applications (optional):
+        sudo ln -sf #{prefix}/BrewBar.app /Applications/BrewBar.app
 
       If you encounter Gatekeeper warnings, run:
-        xattr -cr /Applications/BrewBar.app
+        xattr -cr #{prefix}/BrewBar.app
 
       CLI commands:
-        /Applications/BrewBar.app/Contents/MacOS/BrewBar --version
-        /Applications/BrewBar.app/Contents/MacOS/BrewBar --help
+        #{prefix}/BrewBar.app/Contents/MacOS/BrewBar --version
+        #{prefix}/BrewBar.app/Contents/MacOS/BrewBar --help
     EOS
   end
 
